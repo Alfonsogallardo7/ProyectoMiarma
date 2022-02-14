@@ -19,7 +19,7 @@ public class UsuarioController {
     private final UsuarioServices usuarioServices;
     private final UsuarioDtoConvert usuarioDtoConvert;
 
-    @PostMapping("/register/user")
+    @PostMapping("/auth/register")
     public ResponseEntity<GetUsuarioDto> addPropietario (@RequestBody CreateUsuarioDto nuevoUsuario) {
         Usuario usuario = usuarioServices.savePropietario(nuevoUsuario);
 
