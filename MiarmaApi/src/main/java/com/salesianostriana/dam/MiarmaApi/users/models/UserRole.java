@@ -1,7 +1,7 @@
 package com.salesianostriana.dam.MiarmaApi.users.models;
 
 public enum UserRole {
-    ADMIN ("ADMIN"), USUARIO ("USUARIO");
+    USUARIO ("USUARIO");
 
     private String valor;
 

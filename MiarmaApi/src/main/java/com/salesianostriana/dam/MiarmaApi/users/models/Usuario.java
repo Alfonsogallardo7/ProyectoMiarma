@@ -48,6 +48,8 @@ public class Usuario implements Serializable, UserDetails {
 
     private String fotoPerfil;
 
+    private boolean privacidad;
+
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
