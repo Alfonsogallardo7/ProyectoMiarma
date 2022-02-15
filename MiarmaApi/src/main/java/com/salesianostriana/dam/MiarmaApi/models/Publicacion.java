@@ -30,13 +30,13 @@ public class Publicacion implements Serializable {
     )
     private UUID id;
 
-    private String Titulo;
+    private String titulo;
 
     private String texto;
 
     private String fichero;
 
-    private boolean publica;
+    private Privacidad privacidad;
 
     @ManyToOne
     private Usuario usuario;

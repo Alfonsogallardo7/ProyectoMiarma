@@ -22,6 +22,8 @@ public class AuthenticationController {
 
     private final JwtProvider jwtProvider;
 
+    String jwt = "";
+
     @PostMapping("/auth/login")
     public ResponseEntity<?> login (@RequestBody LoginDto loginDto) {
         Authentication authentication = manager.authenticate(
@@ -33,7 +35,7 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtProvider.generateToken(authentication);
+        jwt = jwtProvider.generateToken(authentication);
 
         Usuario usuario = (Usuario) authentication.getPrincipal();
 
@@ -53,7 +55,7 @@ public class AuthenticationController {
                 .apellidos(usuario.getApellidos())
                 .email(usuario.getEmail())
                 .fotoPerfil(usuario.getFotoPerfil())
-                .privacidad(usuario.isPrivacidad())
+                .privacidad(usuario.getPrivacidad().name())
                 .rol(usuario.getRole().name())
                 .token(jwt)
                 .build();

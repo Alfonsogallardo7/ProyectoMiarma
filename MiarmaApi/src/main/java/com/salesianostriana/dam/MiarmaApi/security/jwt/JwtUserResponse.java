@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Builder
 public class JwtUserResponse {
 
-    private String nombre, apellidos, username, email, fotoPerfil, rol, token;
+    private String nombre, apellidos, username, email, fotoPerfil, rol, token, privacidad;
 
-    private boolean privacidad;
+
 }

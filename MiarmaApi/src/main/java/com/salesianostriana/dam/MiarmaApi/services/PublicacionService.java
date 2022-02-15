@@ -1,10 +1,13 @@
 package com.salesianostriana.dam.MiarmaApi.services;
 
+import com.salesianostriana.dam.MiarmaApi.dto.CreatePublicacionDto;
 import com.salesianostriana.dam.MiarmaApi.models.Publicacion;
-import com.salesianostriana.dam.MiarmaApi.repository.PublicacionesRepository;
-import com.salesianostriana.dam.MiarmaApi.services.base.BaseService;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
+import java.util.List;
 
-public class PublicacionService extends BaseService<Publicacion, UUID, PublicacionesRepository> {
+public interface PublicacionService {
+
+    Publicacion save (CreatePublicacionDto v , MultipartFile file);
+    List<Publicacion> findAll();
 }

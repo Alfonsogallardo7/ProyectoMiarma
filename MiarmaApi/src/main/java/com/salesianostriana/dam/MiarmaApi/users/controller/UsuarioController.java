@@ -21,11 +21,11 @@ public class UsuarioController {
 
     @PostMapping("/auth/register")
     public ResponseEntity<GetUsuarioDto> addPropietario (@RequestBody CreateUsuarioDto nuevoUsuario) {
-        Usuario usuario = usuarioServices.savePropietario(nuevoUsuario);
+        Usuario usuario = usuarioServices.save(nuevoUsuario);
 
         if (usuario == null) {
             return ResponseEntity.badRequest().build();
         } else
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioDtoConvert.converterUsuarioToUsuarioDto(usuario));
+            return ResponseEntity.ok(usuarioDtoConvert.converterUsuarioToUsuarioDto(usuario));
     }
 }

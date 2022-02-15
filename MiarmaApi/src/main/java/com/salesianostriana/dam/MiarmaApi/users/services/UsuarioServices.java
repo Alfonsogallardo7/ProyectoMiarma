@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.MiarmaApi.users.services;
 
+import com.salesianostriana.dam.MiarmaApi.models.Privacidad;
 import com.salesianostriana.dam.MiarmaApi.services.base.BaseService;
 import com.salesianostriana.dam.MiarmaApi.users.dto.CreateUsuarioDto;
 import com.salesianostriana.dam.MiarmaApi.users.models.UserRole;
@@ -20,7 +21,7 @@ public class UsuarioServices extends BaseService<Usuario, UUID, UsuarioRepositor
 
     private final PasswordEncoder passwordEncoder;
 
-    public Usuario savePropietario (CreateUsuarioDto nuevoUsuario) {
+    public Usuario save (CreateUsuarioDto nuevoUsuario) {
         if (nuevoUsuario.getPassword().contentEquals(nuevoUsuario.getPassword2())){
             Usuario usuario = Usuario.builder()
                     .password(passwordEncoder.encode(nuevoUsuario.getPassword()))
@@ -30,10 +31,11 @@ public class UsuarioServices extends BaseService<Usuario, UUID, UsuarioRepositor
                     .email(nuevoUsuario.getEmail())
                     .fechaNacimiento(nuevoUsuario.getFechaNacimiento())
                     .username(nuevoUsuario.getUsername())
+                    .privacidad(Privacidad.PUBLICO)
                     .role(UserRole.USUARIO)
                     .build();
             return save(usuario);
-        }
+        } else
 
         return null;
     }

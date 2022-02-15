@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.MiarmaApi.users.models;
 
+import com.salesianostriana.dam.MiarmaApi.models.Privacidad;
 import com.salesianostriana.dam.MiarmaApi.models.Publicacion;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -48,7 +49,8 @@ public class Usuario implements Serializable, UserDetails {
 
     private String fotoPerfil;
 
-    private boolean privacidad;
+    @Enumerated(EnumType.STRING)
+    private Privacidad privacidad;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
