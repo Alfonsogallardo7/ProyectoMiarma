@@ -10,5 +10,5 @@ import lombok.experimental.SuperBuilder;
 @Getter @Setter
 public class CreatePublicacionDto {
 
-    String titulo, texto, fichero, privacidad;
+    private String titulo, texto, fichero, privacidad;
 }

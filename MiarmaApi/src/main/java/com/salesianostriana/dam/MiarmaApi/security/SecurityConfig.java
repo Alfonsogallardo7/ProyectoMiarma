@@ -49,11 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
-                .antMatchers(HttpMethod.GET, "/me", "/post/public", "/post/{id}", "/post/{nick}", "/post/me", "/profile/{id}", "/follow/list").permitAll()
-                .antMatchers(HttpMethod.POST, "/post/", "/follow/{nick}", "/follow/accept/{id}", "/follow/decline/{id}").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/me", "/post/**", "/profile/{id}", "/follow/list").permitAll()
+                .antMatchers(HttpMethod.POST, "/post/", "/follow/**").permitAll()
                 .antMatchers(HttpMethod.PUT,"/post/{id}", "/porfile/me").hasRole("USUARIO")
                 .antMatchers(HttpMethod.DELETE, "/post/{id}").hasRole("USUARIO")
+                .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
