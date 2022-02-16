@@ -30,6 +30,48 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAccesDeniedHandler jwtAccesDeniedHandler;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
+    @Override
+    protected void configure (AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccesDeniedHandler)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/download/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/me", "/post/**", "/profile/{id}", "/follow/list").permitAll()
+                .antMatchers(HttpMethod.POST, "/post/", "/follow/**").permitAll()
+                .antMatchers(HttpMethod.PUT,"/post/{id}", "/porfile/me").hasRole("USUARIO")
+                .antMatchers(HttpMethod.DELETE, "/post/{id}").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
+                .anyRequest().authenticated();
+
+        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.headers().frameOptions().disable();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+    /*private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccesDeniedHandler jwtAccesDeniedHandler;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
 
 
     @Override
@@ -54,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/me", "/post/**", "/profile/{id}", "/follow/list").permitAll()
                 .antMatchers(HttpMethod.POST, "/post/", "/follow/**").permitAll()
                 .antMatchers(HttpMethod.PUT,"/post/{id}", "/porfile/me").hasRole("USUARIO")
-                .antMatchers(HttpMethod.DELETE, "/post/{id}").hasRole("USUARIO")
+                .antMatchers(HttpMethod.DELETE, "/post/{id}").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated();
 
@@ -68,6 +110,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
+    }*/
 
 }

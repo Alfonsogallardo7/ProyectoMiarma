@@ -17,7 +17,26 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JwtAccesDeniedHandler implements AccessDeniedHandler {
 
+
+
+
     private final ObjectMapper mapper;
+
+
+    @Override
+    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
+        httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        httpServletResponse.setContentType("application/json");
+
+        Map<String, String> mensajes =
+                Map.of("mensaje", e.getMessage());
+
+        String strjson = mapper.writeValueAsString(mensajes);
+
+        httpServletResponse.getWriter().println(strjson);
+    }
+
+    /*private final ObjectMapper mapper;
 
 
     @Override
@@ -31,5 +50,5 @@ public class JwtAccesDeniedHandler implements AccessDeniedHandler {
         String strjson = mapper.writeValueAsString(mensajes);
 
         response.getWriter().println(strjson);
-    }
+    }*/
 }

@@ -9,9 +9,12 @@ import com.salesianostriana.dam.MiarmaApi.services.StorageService;
 import com.salesianostriana.dam.MiarmaApi.users.models.Usuario;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.awt.print.Pageable;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,10 +63,26 @@ public class PublicacionServiceImpl implements PublicacionService {
     }
 
     @Override
-    public List<Publicacion> findAll() {
-        return repository.findAll();
+    public List<Publicacion> findAllByPrivacidad(/*Pageable pageable*/) {
+        if (repository.findAllByPrivacidad(Privacidad.PUBLICO).isEmpty())
+            return null;
+        else
+            return repository.findAllByPrivacidad(Privacidad.PUBLICO).get();
     }
 
     @Override
     public Optional<Publicacion> findById(UUID id) { return repository.findById(id);}
+
+    /*@Override
+    public void deletePost (UUID id) throws Exception {
+        Optional<Publicacion> publicacion = repository.findById(id);
+        String name = StringUtils.cleanPath(String.valueOf(publicacion.get().getFichero()))
+                .replace("http://localhost:8080/download/", "");
+        Path path = storageService.load(name);
+        String filename = StringUtils.cleanPath(String.valueOf(path))
+                .replace("http://localhost:8080/download/", "");
+
+        storageService.deleteFile(filename);
+        repository.deleteById(id);
+    }*/
 }
