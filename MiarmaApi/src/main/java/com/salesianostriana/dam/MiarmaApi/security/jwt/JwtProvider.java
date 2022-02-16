@@ -57,6 +57,7 @@ public class JwtProvider {
                 .claim("role", user.getRole().name())
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
                 .compact();
+
     }
 
     public UUID getUserIdFromJwt (String token) {

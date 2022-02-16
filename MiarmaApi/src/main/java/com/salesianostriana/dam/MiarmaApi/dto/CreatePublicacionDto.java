@@ -1,11 +1,9 @@
 package com.salesianostriana.dam.MiarmaApi.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Value
+@NoArgsConstructor @AllArgsConstructor
 @SuperBuilder
 @Getter @Setter
 public class CreatePublicacionDto {

@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/download/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/me", "/post/**", "/profile/{id}", "/follow/list").permitAll()
                 .antMatchers(HttpMethod.POST, "/post/", "/follow/**").permitAll()
                 .antMatchers(HttpMethod.PUT,"/post/{id}", "/porfile/me").hasRole("USUARIO")

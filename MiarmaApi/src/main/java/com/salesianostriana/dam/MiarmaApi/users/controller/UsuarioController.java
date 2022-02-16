@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +22,9 @@ public class UsuarioController {
     private final UsuarioDtoConvert usuarioDtoConvert;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<GetUsuarioDto> addPropietario (@RequestBody CreateUsuarioDto nuevoUsuario) {
-        Usuario usuario = usuarioServices.save(nuevoUsuario);
+    public ResponseEntity<GetUsuarioDto> addPropietario (@RequestPart("nuevoUsuario") CreateUsuarioDto nuevoUsuario, @RequestPart("file")MultipartFile file) {
+
+        Usuario usuario = usuarioServices.save(nuevoUsuario, file);
 
         if (usuario == null) {
             return ResponseEntity.badRequest().build();
