@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface PublicacionesRepository extends JpaRepository<Publicacion, UUID> {
 
     Optional<List<Publicacion>> findAllByPrivacidad(Privacidad privacidad);
+
 }

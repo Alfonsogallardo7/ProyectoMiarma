@@ -19,5 +19,6 @@ public interface PublicacionService {
     Publicacion savePrivate (CreatePublicacionDto v , MultipartFile file, Usuario usuario);
     List<Publicacion> findAllByPrivacidad(/*Pageable pageable*/);
     Optional<Publicacion> findById (UUID id);
+    Publicacion findByIdPrivacidad (UUID id);
     /*Void deletePost (UUID id);*/
 }

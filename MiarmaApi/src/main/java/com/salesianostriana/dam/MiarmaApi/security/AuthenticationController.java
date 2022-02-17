@@ -45,7 +45,7 @@ public class AuthenticationController {
 
     @GetMapping("/me")
     public ResponseEntity<?> me (@AuthenticationPrincipal Usuario usuario) {
-        return ResponseEntity.ok(convertUserToJwtUserResponse(usuario, null));
+        return ResponseEntity.ok(convertUserToJwtUserResponse(usuario, jwt));
     }
 
     private JwtUserResponse convertUserToJwtUserResponse (Usuario usuario, String jwt) {

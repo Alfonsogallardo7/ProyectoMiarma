@@ -56,7 +56,7 @@ public class Usuario implements Serializable, UserDetails {
     private UserRole role;
 
     @Builder.Default
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     private List<Publicacion> listaPublicaciones = new ArrayList<>();
 
     /*

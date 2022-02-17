@@ -9,6 +9,7 @@ public class PublicacionDtoConverter {
     public GetPublicacionDto convertPublicacionToPublicacionDto (Publicacion publicacion) {
         return GetPublicacionDto.builder()
                 .id(publicacion.getId())
+                .titulo(publicacion.getTitulo())
                 .texto(publicacion.getTexto())
                 .fichero(publicacion.getFichero())
                 .privacidad(publicacion.getPrivacidad().getValor())

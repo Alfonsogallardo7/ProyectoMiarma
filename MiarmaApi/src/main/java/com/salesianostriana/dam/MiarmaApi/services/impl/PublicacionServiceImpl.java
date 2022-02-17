@@ -7,6 +7,7 @@ import com.salesianostriana.dam.MiarmaApi.repository.PublicacionesRepository;
 import com.salesianostriana.dam.MiarmaApi.services.PublicacionService;
 import com.salesianostriana.dam.MiarmaApi.services.StorageService;
 import com.salesianostriana.dam.MiarmaApi.users.models.Usuario;
+import com.salesianostriana.dam.MiarmaApi.users.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class PublicacionServiceImpl implements PublicacionService {
 
     private final PublicacionesRepository repository;
+    private final UsuarioRepository usuarioRepository;
     private final StorageService storageService;
 
     @Override
@@ -35,13 +37,18 @@ public class PublicacionServiceImpl implements PublicacionService {
                 .path(filename)
                 .toUriString();
 
-        return repository.save(Publicacion.builder()
+
+        Publicacion post1 = Publicacion.builder()
                 .titulo(v.getTitulo())
                 .texto(v.getTexto())
                 .fichero(uri)
                 .privacidad(Privacidad.PUBLICO)
                 .usuario(usuario)
-                .build());
+                .build();
+
+        return repository.save(post1);
+
+
     }
 
     @Override
@@ -71,7 +78,19 @@ public class PublicacionServiceImpl implements PublicacionService {
     }
 
     @Override
-    public Optional<Publicacion> findById(UUID id) { return repository.findById(id);}
+    public Publicacion findByIdPrivacidad(UUID id) {
+        Optional<Publicacion> publicacion = findById(id);
+
+        if (publicacion.isEmpty()){
+            return null;
+        }else if (publicacion.get().getPrivacidad().equals(Privacidad.PUBLICO)) {
+            return publicacion.get();
+        }
+        return null;
+    }
+
+    @Override
+    public Optional<Publicacion> findById (UUID id) { return repository.findById(id);}
 
     /*@Override
     public void deletePost (UUID id) throws Exception {

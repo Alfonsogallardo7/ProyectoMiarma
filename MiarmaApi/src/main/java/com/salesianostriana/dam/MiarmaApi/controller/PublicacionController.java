@@ -39,8 +39,9 @@ public class PublicacionController {
 
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createPublic (@RequestPart("newPublicacion") CreatePublicacionDto newPublicacion, @RequestPart("file")MultipartFile file, @AuthenticationPrincipal Usuario usuario) {
+        Publicacion publicacion = service.savePublic(newPublicacion, file, usuario);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.savePublic(newPublicacion, file, usuario));
+                .body(publicacionDtoConverter.convertPublicacionToPublicacionDto(publicacion));
 
     }
 
@@ -58,9 +59,37 @@ public class PublicacionController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<GetPublicacionDto> findById (@PathVariable UUID id) {
+        //if (usuario.getRole().equals(UserRole.ADMIN) || usuario.getId().equals(id)) {
+        Publicacion publicacionBuscada = service.findByIdPrivacidad(id);
+            if (publicacionBuscada == null)
+                return ResponseEntity.notFound().build();
+            else {
+                return ResponseEntity.ok()
+                        .body(publicacionDtoConverter.convertPublicacionToPublicacionDto(publicacionBuscada));
+            }
+        //}
+        //return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<GetPublicacionDto> findAllMe (@PathVariable UUID id) {
+        //if (usuario.getRole().equals(UserRole.ADMIN) || usuario.getId().equals(id)) {
+        if (service.findByIdPrivacidad(id) == null)
+            return ResponseEntity.notFound().build();
+        else {
+            return ResponseEntity.ok()
+                    .body(publicacionDtoConverter.convertPublicacionToPublicacionDto(service.findByIdPrivacidad(id)));
+        }
+        //}
+        //return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
    /* @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deletePost(UUID id) {
 
 
     }*/
+
 }
