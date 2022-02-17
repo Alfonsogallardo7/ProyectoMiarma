@@ -73,7 +73,7 @@ public class PublicacionController {
         //return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @GetMapping("/me")
+    /*@GetMapping("/me")
     public ResponseEntity<GetPublicacionDto> findAllMe (@PathVariable UUID id) {
         //if (usuario.getRole().equals(UserRole.ADMIN) || usuario.getId().equals(id)) {
         if (service.findByIdPrivacidad(id) == null)

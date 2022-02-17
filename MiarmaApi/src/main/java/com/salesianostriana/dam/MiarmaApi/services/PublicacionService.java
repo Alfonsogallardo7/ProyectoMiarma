@@ -20,5 +20,6 @@ public interface PublicacionService {
     List<Publicacion> findAllByPrivacidad(/*Pageable pageable*/);
     Optional<Publicacion> findById (UUID id);
     Publicacion findByIdPrivacidad (UUID id);
+    //Publicacion findByUsername (String username);
     /*Void deletePost (UUID id);*/
 }

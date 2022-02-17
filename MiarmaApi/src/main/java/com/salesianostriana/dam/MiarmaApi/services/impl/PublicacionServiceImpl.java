@@ -89,6 +89,18 @@ public class PublicacionServiceImpl implements PublicacionService {
         return null;
     }
 
+    /*@Override
+    public Publicacion findByUsername(String username) {
+        Optional<Publicacion> publicacion = findBy(id);
+
+        if (publicacion.isEmpty()){
+            return null;
+        }else if (publicacion.get().getPrivacidad().equals(Privacidad.PUBLICO)) {
+            return publicacion.get();
+        }
+        return null;
+    }*/
+
     @Override
     public Optional<Publicacion> findById (UUID id) { return repository.findById(id);}
 
