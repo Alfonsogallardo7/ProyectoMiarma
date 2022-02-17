@@ -22,7 +22,7 @@ public class UsuarioController {
     private final UsuarioDtoConvert usuarioDtoConvert;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<GetUsuarioDto> addPropietario (@RequestPart("nuevoUsuario") CreateUsuarioDto nuevoUsuario, @RequestPart("file")MultipartFile file) {
+    public ResponseEntity<GetUsuarioDto> addUsuario (@RequestPart("nuevoUsuario") CreateUsuarioDto nuevoUsuario, @RequestPart("file")MultipartFile file) {
 
         Usuario usuario = usuarioServices.save(nuevoUsuario, file);
 

@@ -1,8 +1,10 @@
 package com.salesianostriana.dam.MiarmaApi.security;
 
+import com.salesianostriana.dam.MiarmaApi.dto.PublicacionDtoConverter;
 import com.salesianostriana.dam.MiarmaApi.security.dto.LoginDto;
 import com.salesianostriana.dam.MiarmaApi.security.jwt.JwtProvider;
 import com.salesianostriana.dam.MiarmaApi.security.jwt.JwtUserResponse;
+import com.salesianostriana.dam.MiarmaApi.security.jwt.JwtUserResponseWithListPost;
 import com.salesianostriana.dam.MiarmaApi.users.models.Usuario;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,12 +16,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
+
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationManager manager;
-
+    private final PublicacionDtoConverter publicacionDtoConverter;
     private final JwtProvider jwtProvider;
 
     String jwt = "";
@@ -58,6 +62,29 @@ public class AuthenticationController {
                 .privacidad(usuario.getPrivacidad().name())
                 .rol(usuario.getRole().name())
                 .token(jwt)
+                .build();
+    }
+
+    @GetMapping("/post/me")
+    public ResponseEntity<?> meWithListPost (@AuthenticationPrincipal Usuario usuario) {
+        return ResponseEntity.ok(convertUserToJwtUserResponseWithListaPublicacion(usuario, jwt));
+    }
+
+    private JwtUserResponseWithListPost convertUserToJwtUserResponseWithListaPublicacion (Usuario usuario, String jwt) {
+        return JwtUserResponseWithListPost.builder()
+                .nombre(usuario.getNombre())
+                .username(usuario.getUsername())
+                .apellidos(usuario.getApellidos())
+                .email(usuario.getEmail())
+                .fotoPerfil(usuario.getFotoPerfil())
+                .privacidad(usuario.getPrivacidad().name())
+                .rol(usuario.getRole().name())
+                .token(jwt)
+                .listaPublicaciones((usuario.
+                        getListaPublicaciones()
+                        .stream()
+                        .map(publicacionDtoConverter::convertPublicacionToPublicacionDto)
+                        .collect(Collectors.toList())))
                 .build();
     }
 }

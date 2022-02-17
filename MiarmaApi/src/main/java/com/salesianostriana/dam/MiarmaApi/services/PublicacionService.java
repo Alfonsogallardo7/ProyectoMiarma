@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.MiarmaApi.services;
 
 import com.salesianostriana.dam.MiarmaApi.dto.CreatePublicacionDto;
+import com.salesianostriana.dam.MiarmaApi.dto.GetPublicacionDto;
 import com.salesianostriana.dam.MiarmaApi.models.Privacidad;
 import com.salesianostriana.dam.MiarmaApi.models.Publicacion;
 import com.salesianostriana.dam.MiarmaApi.users.models.Usuario;
@@ -19,7 +20,11 @@ public interface PublicacionService {
     Publicacion savePrivate (CreatePublicacionDto v , MultipartFile file, Usuario usuario);
     List<Publicacion> findAllByPrivacidad(/*Pageable pageable*/);
     Optional<Publicacion> findById (UUID id);
+    Publicacion findById2(UUID id);
     Publicacion findByIdPrivacidad (UUID id);
-    //Publicacion findByUsername (String username);
+    Optional<Usuario> findByUsername(String username);
+    List<Publicacion> listFindByUsername (String username);
+    GetPublicacionDto edit (UUID id, CreatePublicacionDto createPublicacionDto, MultipartFile file, Usuario usuario);
+    void deleteById (UUID uuid);
     /*Void deletePost (UUID id);*/
 }

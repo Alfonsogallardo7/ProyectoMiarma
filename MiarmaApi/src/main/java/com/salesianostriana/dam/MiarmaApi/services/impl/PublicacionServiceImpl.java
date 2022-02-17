@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.MiarmaApi.services.impl;
 
 import com.salesianostriana.dam.MiarmaApi.dto.CreatePublicacionDto;
+import com.salesianostriana.dam.MiarmaApi.dto.GetPublicacionDto;
 import com.salesianostriana.dam.MiarmaApi.models.Privacidad;
 import com.salesianostriana.dam.MiarmaApi.models.Publicacion;
 import com.salesianostriana.dam.MiarmaApi.repository.PublicacionesRepository;
@@ -9,6 +10,7 @@ import com.salesianostriana.dam.MiarmaApi.services.StorageService;
 import com.salesianostriana.dam.MiarmaApi.users.models.Usuario;
 import com.salesianostriana.dam.MiarmaApi.users.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +29,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     private final PublicacionesRepository repository;
     private final UsuarioRepository usuarioRepository;
     private final StorageService storageService;
+    private final FileSystemStorageService fileSystemStorageService;
 
     @Override
     public Publicacion savePublic(CreatePublicacionDto v, MultipartFile file, Usuario usuario) {
@@ -79,7 +82,7 @@ public class PublicacionServiceImpl implements PublicacionService {
 
     @Override
     public Publicacion findByIdPrivacidad(UUID id) {
-        Optional<Publicacion> publicacion = findById(id);
+        Optional<Publicacion> publicacion = repository.findById(id);
 
         if (publicacion.isEmpty()){
             return null;
@@ -89,31 +92,60 @@ public class PublicacionServiceImpl implements PublicacionService {
         return null;
     }
 
-    /*@Override
-    public Publicacion findByUsername(String username) {
-        Optional<Publicacion> publicacion = findBy(id);
-
-        if (publicacion.isEmpty()){
+    @Override
+    public List<Publicacion> listFindByUsername(String username) {
+        if (usuarioRepository.findAllByUsername(username).isEmpty())
             return null;
-        }else if (publicacion.get().getPrivacidad().equals(Privacidad.PUBLICO)) {
-            return publicacion.get();
+        else
+            return usuarioRepository.findAllByUsername(username).get().getListaPublicaciones();
+    }
+
+    @Override
+    public GetPublicacionDto edit(UUID id, CreatePublicacionDto publicacion, MultipartFile file, Usuario usuario) {
+        Optional<Publicacion> publicacionBuscada = repository.findById(id);
+
+        fileSystemStorageService.deleteFile(publicacionBuscada.get().getFichero());
+        String filename = storageService.store(file);
+
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
+        if (publicacionBuscada.isEmpty())
+            return null;
+        else {
+            return  GetPublicacionDto.builder()
+                    .titulo(publicacion.getTitulo())
+                    .texto(publicacion.getTexto())
+                    .usernameUsuario(usuario.getUsername())
+                    .fichero(uri)
+                    .build();
         }
-        return null;
-    }*/
+    }
+
+    @Override
+    public void deleteById(UUID uuid) {
+        repository.deleteById(uuid);
+    }
+
+
+    @Override
+    public Optional<Usuario> findByUsername(String username) {
+        return usuarioRepository.findAllByUsername(username);
+    }
+
 
     @Override
     public Optional<Publicacion> findById (UUID id) { return repository.findById(id);}
 
-    /*@Override
-    public void deletePost (UUID id) throws Exception {
+    @Override
+    public Publicacion findById2(UUID id) {
         Optional<Publicacion> publicacion = repository.findById(id);
-        String name = StringUtils.cleanPath(String.valueOf(publicacion.get().getFichero()))
-                .replace("http://localhost:8080/download/", "");
-        Path path = storageService.load(name);
-        String filename = StringUtils.cleanPath(String.valueOf(path))
-                .replace("http://localhost:8080/download/", "");
 
-        storageService.deleteFile(filename);
-        repository.deleteById(id);
-    }*/
+        if (publicacion.isEmpty()){
+            return null;
+        }else
+            return publicacion.get();
+
+    }
 }

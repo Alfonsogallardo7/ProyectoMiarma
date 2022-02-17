@@ -5,9 +5,12 @@ import com.salesianostriana.dam.MiarmaApi.dto.GetPublicacionDto;
 import com.salesianostriana.dam.MiarmaApi.dto.PublicacionDtoConverter;
 import com.salesianostriana.dam.MiarmaApi.models.Publicacion;
 import com.salesianostriana.dam.MiarmaApi.repository.PublicacionesRepository;
+import com.salesianostriana.dam.MiarmaApi.security.jwt.JwtUserResponse;
 import com.salesianostriana.dam.MiarmaApi.services.PublicacionService;
 import com.salesianostriana.dam.MiarmaApi.services.StorageService;
+import com.salesianostriana.dam.MiarmaApi.services.impl.FileSystemStorageService;
 import com.salesianostriana.dam.MiarmaApi.users.dto.GetUsuarioDto;
+import com.salesianostriana.dam.MiarmaApi.users.dto.UsuarioDtoConvert;
 import com.salesianostriana.dam.MiarmaApi.users.models.Usuario;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PageableDefault;
@@ -33,8 +36,10 @@ import java.util.stream.Collectors;
 public class PublicacionController {
 
     private final StorageService storageService;
+    private final FileSystemStorageService fileSystemStorageService;
     private final PublicacionService service;
     private final PublicacionDtoConverter publicacionDtoConverter;
+    private final UsuarioDtoConvert usuarioDtoConvert;
     private final PublicacionesRepository publicacionesRepository;
 
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -46,8 +51,8 @@ public class PublicacionController {
     }
 
     @GetMapping("/public")
-    public ResponseEntity<List<GetPublicacionDto>> findAllByPrivacidad(/*@PageableDefault(size = 10 , page = 0)Pageable pageable*/) {
-        List<Publicacion> publicacion = service.findAllByPrivacidad(/*pageable*/);
+    public ResponseEntity<List<GetPublicacionDto>> findAllByPrivacidad() {
+        List<Publicacion> publicacion = service.findAllByPrivacidad();
 
         if (publicacion == null) {
             return ResponseEntity.noContent().build();
@@ -73,23 +78,41 @@ public class PublicacionController {
         //return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    /*@GetMapping("/me")
-    public ResponseEntity<GetPublicacionDto> findAllMe (@PathVariable UUID id) {
-        //if (usuario.getRole().equals(UserRole.ADMIN) || usuario.getId().equals(id)) {
-        if (service.findByIdPrivacidad(id) == null)
+    @PutMapping("/{id}")
+    public ResponseEntity<GetPublicacionDto> edit (@PathVariable UUID id, @AuthenticationPrincipal Usuario usuario, @RequestPart("newPublicacion")CreatePublicacionDto publicacion, @RequestPart("file") MultipartFile file) {
+        Publicacion publicacionBuscada = service.findById2(id);
+        if (publicacionBuscada == null)
             return ResponseEntity.notFound().build();
         else {
             return ResponseEntity.ok()
-                    .body(publicacionDtoConverter.convertPublicacionToPublicacionDto(service.findByIdPrivacidad(id)));
+                    .body(publicacionDtoConverter.convertPublicacionToPublicacionDto(publicacionBuscada));
         }
-        //}
-        //return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-   /* @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deletePost(UUID id) {
+   @GetMapping("/")
+    public ResponseEntity<List<GetPublicacionDto>> findByUsername (@RequestParam(name = "username") String username) {
+        List<Publicacion> publicacion = service.listFindByUsername(username);
+
+        if (publicacion == null) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok()
+                    .body(publicacion.stream()
+                            .map(publicacionDtoConverter::convertPublicacionToPublicacionDto)
+                            .collect(Collectors.toList()));
+        }
+    }
 
 
-    }*/
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete (@PathVariable UUID id, @AuthenticationPrincipal Usuario usuario) {
+        Optional<Publicacion> publicacionBuscada = service.findById(id);
 
+        if (publicacionBuscada.isEmpty())
+            return ResponseEntity.notFound().build();
+        else
+            fileSystemStorageService.deleteFile(publicacionBuscada.get().getFichero());
+            service.deleteById(id);
+            return ResponseEntity.noContent().build();
+    }
 }
