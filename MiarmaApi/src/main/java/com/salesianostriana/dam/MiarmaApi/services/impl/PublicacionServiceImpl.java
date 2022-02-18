@@ -2,6 +2,7 @@ package com.salesianostriana.dam.MiarmaApi.services.impl;
 
 import com.salesianostriana.dam.MiarmaApi.dto.CreatePublicacionDto;
 import com.salesianostriana.dam.MiarmaApi.dto.GetPublicacionDto;
+import com.salesianostriana.dam.MiarmaApi.dto.PublicacionDtoConverter;
 import com.salesianostriana.dam.MiarmaApi.models.Privacidad;
 import com.salesianostriana.dam.MiarmaApi.models.Publicacion;
 import com.salesianostriana.dam.MiarmaApi.repository.PublicacionesRepository;
@@ -30,6 +31,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     private final UsuarioRepository usuarioRepository;
     private final StorageService storageService;
     private final FileSystemStorageService fileSystemStorageService;
+    private final PublicacionDtoConverter publicacionDtoConverter;
 
     @Override
     public Publicacion savePublic(CreatePublicacionDto v, MultipartFile file, Usuario usuario) {
@@ -114,12 +116,17 @@ public class PublicacionServiceImpl implements PublicacionService {
         if (publicacionBuscada.isEmpty())
             return null;
         else {
-            return  GetPublicacionDto.builder()
+            GetPublicacionDto publicacion1=  GetPublicacionDto.builder()
+                    .id(publicacionBuscada.get().getId())
                     .titulo(publicacion.getTitulo())
                     .texto(publicacion.getTexto())
                     .usernameUsuario(usuario.getUsername())
                     .fichero(uri)
+                    .privacidad(Privacidad.PUBLICO.toString())
                     .build();
+
+            repository.save(publicacionDtoConverter.convertPublicacionDtoToPublicacion(publicacion1, publicacionBuscada.get()));
+            return publicacion1;
         }
     }
 

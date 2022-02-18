@@ -50,6 +50,14 @@ public class PublicacionController {
 
     }
 
+    @PostMapping(value = "/private", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createPrivate (@RequestPart("newPublicacion") CreatePublicacionDto newPublicacion, @RequestPart("file")MultipartFile file, @AuthenticationPrincipal Usuario usuario) {
+        Publicacion publicacion = service.savePrivate(newPublicacion, file, usuario);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(publicacionDtoConverter.convertPublicacionToPublicacionDto(publicacion));
+
+    }
+
     @GetMapping("/public")
     public ResponseEntity<List<GetPublicacionDto>> findAllByPrivacidad() {
         List<Publicacion> publicacion = service.findAllByPrivacidad();
@@ -80,12 +88,12 @@ public class PublicacionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<GetPublicacionDto> edit (@PathVariable UUID id, @AuthenticationPrincipal Usuario usuario, @RequestPart("newPublicacion")CreatePublicacionDto publicacion, @RequestPart("file") MultipartFile file) {
-        Publicacion publicacionBuscada = service.findById2(id);
+        GetPublicacionDto publicacionBuscada = service.edit(id, publicacion, file, usuario);
         if (publicacionBuscada == null)
             return ResponseEntity.notFound().build();
         else {
             return ResponseEntity.ok()
-                    .body(publicacionDtoConverter.convertPublicacionToPublicacionDto(publicacionBuscada));
+                    .body(publicacionBuscada);
         }
     }
 

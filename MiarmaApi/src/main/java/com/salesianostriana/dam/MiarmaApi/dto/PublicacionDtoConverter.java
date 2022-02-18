@@ -16,4 +16,15 @@ public class PublicacionDtoConverter {
                 .usernameUsuario(publicacion.getUsuario().getUsername())
                 .build();
     }
+
+    public Publicacion convertPublicacionDtoToPublicacion (GetPublicacionDto publiDto, Publicacion publicacion) {
+        return new Publicacion(
+                publicacion.getId(),
+                publiDto.getTitulo(),
+                publiDto.getTexto(),
+                publiDto.getFichero(),
+                publicacion.getPrivacidad(),
+                publicacion.getUsuario()
+        );
+    }
 }

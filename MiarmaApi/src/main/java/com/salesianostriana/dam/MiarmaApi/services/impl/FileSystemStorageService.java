@@ -13,6 +13,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -59,6 +62,7 @@ public class FileSystemStorageService implements StorageService {
                 suffix = suffix.substring(suffix.length()-6);
 
                 newFilename = name + "_" + suffix + "." + extension;
+
             }
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, rootLocation.resolve(newFilename),
