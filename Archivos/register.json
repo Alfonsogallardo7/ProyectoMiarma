@@ -1,0 +1,10 @@
+{
+    "nombre" : "Miguel" ,
+    "apellidos" : "Campos Rivera",
+    "email" : "miguelcampos@gmail.com",
+    "password" : "1234abcd",
+    "password2" : "1234abcd",
+    "username" : "miguelcamposdev",
+    "fechaNaciemiento" : "2001-06-30"
+    
+}
