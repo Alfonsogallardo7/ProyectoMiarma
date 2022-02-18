@@ -30,10 +30,26 @@ Para arrancar nuestro proyecto deberemos de seguir los siguientes pasos.
 ### - Colección de Postman
 
     1. Descargamos y descomprimimos la colección de postman
-    2. La inportamos a nuestro postman
+    2. La importamos al nuestro
 ### - Arrancamos el Proyecto 
 
     1. Hacemos click en el botón de Maven,la cual encontraremos en la esquina superior derecha de la ventana
     2. A continuación clickamos en Pluggins.
     3. Después en Spring Boot
     4. Y por último en Spring Boot Run
+
+## - ¿Qué podemos hacer en MiarmaApp?
+
+- Login y Registro
+    - Podremos registrarnos en la aplicación rellenando algunos campos.
+    - Podremos loguearnos si ya tenemos una cuenta registrada.
+    - Además también podremos ver nuestros datos
+
+- Funcionalidades de Publicación
+    - Crear un nuevo post (se creará al usuario, con el que estemos logueado)
+    - Obtener todos los post públicos.
+    - Obtener los datos de un post por id, solo lo podremos ver si esta marcada como pública
+    - Modificar un post (eliminando la foto anterior, y añadiendo una nueva)
+    - Eliminar un post (eliminando a su misma vez la foto o video adjunto)
+    - Obtener todos los post de un usuario, buscandolo por su username, solo lo podremos ver si esta marcada como pública
+    - Obtendremos todas las publicaciones del usuario logueado (independientemente de que sean publicas o privadas)
