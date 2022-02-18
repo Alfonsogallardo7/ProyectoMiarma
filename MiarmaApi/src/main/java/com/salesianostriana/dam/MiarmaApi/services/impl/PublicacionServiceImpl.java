@@ -3,6 +3,7 @@ package com.salesianostriana.dam.MiarmaApi.services.impl;
 import com.salesianostriana.dam.MiarmaApi.dto.CreatePublicacionDto;
 import com.salesianostriana.dam.MiarmaApi.dto.GetPublicacionDto;
 import com.salesianostriana.dam.MiarmaApi.dto.PublicacionDtoConverter;
+import com.salesianostriana.dam.MiarmaApi.errors.exceptions.ListEntityNotFoundException;
 import com.salesianostriana.dam.MiarmaApi.models.Privacidad;
 import com.salesianostriana.dam.MiarmaApi.models.Publicacion;
 import com.salesianostriana.dam.MiarmaApi.repository.PublicacionesRepository;
@@ -17,7 +18,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.awt.print.Pageable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -57,8 +63,20 @@ public class PublicacionServiceImpl implements PublicacionService {
     }
 
     @Override
-    public Publicacion savePrivate (CreatePublicacionDto v, MultipartFile file, Usuario usuario) {
+    public Publicacion savePrivate (CreatePublicacionDto v, MultipartFile file, Usuario usuario) throws IOException {
+
+        String originalFilename = storageService.store(file);
         String filename = storageService.store(file);
+
+        String extension = StringUtils.getFilenameExtension(filename);
+        BufferedImage originalImage = ImageIO.read(file.getInputStream());
+
+        BufferedImage ecaledImage = storageService.simpleResizer(originalImage, 1024);
+
+        OutputStream outputStream = Files.newOutputStream(storageService.load(filename));
+        OutputStream outputStreamOriginal = Files.newOutputStream(storageService.load(originalFilename));
+
+        ImageIO.write(ecaledImage,extension,outputStream);
 
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/download/")
@@ -77,7 +95,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     public List<Publicacion> findAllByPrivacidad(/*Pageable pageable*/) {
         if (repository.findAllByPrivacidad(Privacidad.PUBLICO).isEmpty())
-            return null;
+            throw new ListEntityNotFoundException(Publicacion.class);
         else
             return repository.findAllByPrivacidad(Privacidad.PUBLICO).get();
     }

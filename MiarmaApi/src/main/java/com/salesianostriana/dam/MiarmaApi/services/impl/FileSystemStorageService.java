@@ -6,6 +6,7 @@ import com.salesianostriana.dam.MiarmaApi.exception.FileNotFoundException;
 import com.salesianostriana.dam.MiarmaApi.services.StorageService;
 import com.salesianostriana.dam.MiarmaApi.utils.MediaTypeUrlResource;
 import org.hibernate.criterion.Subqueries;
+import org.imgscalr.Scalr;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
@@ -42,6 +43,11 @@ public class FileSystemStorageService implements StorageService {
         } catch (IOException e) {
             throw new StorageException("Could not initialize storage location", e);
         }
+    }
+
+    @Override
+    public BufferedImage simpleResizer (BufferedImage bufferedImage, int width) {
+        return Scalr.resize(bufferedImage,width);
     }
 
     @Override

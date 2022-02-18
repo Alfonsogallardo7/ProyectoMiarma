@@ -3,12 +3,15 @@ package com.salesianostriana.dam.MiarmaApi.services;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public interface StorageService {
 
     void init();
+
+    BufferedImage simpleResizer (BufferedImage bufferedImage, int width);
 
     String store(MultipartFile file);
 

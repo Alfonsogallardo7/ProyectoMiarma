@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.print.Pageable;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,7 +18,7 @@ public interface PublicacionService {
 
 
     Publicacion savePublic (CreatePublicacionDto v , MultipartFile file, Usuario usuario);
-    Publicacion savePrivate (CreatePublicacionDto v , MultipartFile file, Usuario usuario);
+    Publicacion savePrivate (CreatePublicacionDto v , MultipartFile file, Usuario usuario) throws IOException;
     List<Publicacion> findAllByPrivacidad(/*Pageable pageable*/);
     Optional<Publicacion> findById (UUID id);
     Publicacion findById2(UUID id);
@@ -26,5 +27,4 @@ public interface PublicacionService {
     List<Publicacion> listFindByUsername (String username);
     GetPublicacionDto edit (UUID id, CreatePublicacionDto createPublicacionDto, MultipartFile file, Usuario usuario);
     void deleteById (UUID uuid);
-    /*Void deletePost (UUID id);*/
 }

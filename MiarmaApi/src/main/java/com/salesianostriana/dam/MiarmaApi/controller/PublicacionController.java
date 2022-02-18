@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.awt.print.Pageable;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,7 @@ public class PublicacionController {
     }
 
     @PostMapping(value = "/private", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createPrivate (@RequestPart("newPublicacion") CreatePublicacionDto newPublicacion, @RequestPart("file")MultipartFile file, @AuthenticationPrincipal Usuario usuario) {
+    public ResponseEntity<?> createPrivate (@RequestPart("newPublicacion") CreatePublicacionDto newPublicacion, @RequestPart("file")MultipartFile file, @AuthenticationPrincipal Usuario usuario) throws IOException {
         Publicacion publicacion = service.savePrivate(newPublicacion, file, usuario);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(publicacionDtoConverter.convertPublicacionToPublicacionDto(publicacion));
@@ -62,7 +63,7 @@ public class PublicacionController {
     public ResponseEntity<List<GetPublicacionDto>> findAllByPrivacidad() {
         List<Publicacion> publicacion = service.findAllByPrivacidad();
 
-        if (publicacion == null) {
+        if (publicacion.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok()

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class UsuarioController {
@@ -22,7 +24,7 @@ public class UsuarioController {
     private final UsuarioDtoConvert usuarioDtoConvert;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<GetUsuarioDto> addUsuario (@RequestPart("nuevoUsuario") CreateUsuarioDto nuevoUsuario, @RequestPart("file")MultipartFile file) {
+    public ResponseEntity<GetUsuarioDto> addUsuario (@RequestPart("nuevoUsuario") CreateUsuarioDto nuevoUsuario, @RequestPart("file")MultipartFile file) throws IOException {
 
         Usuario usuario = usuarioServices.save(nuevoUsuario, file);
 
