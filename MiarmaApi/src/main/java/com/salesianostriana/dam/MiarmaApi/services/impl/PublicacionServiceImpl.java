@@ -12,6 +12,8 @@ import com.salesianostriana.dam.MiarmaApi.services.StorageService;
 import com.salesianostriana.dam.MiarmaApi.users.models.Usuario;
 import com.salesianostriana.dam.MiarmaApi.users.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -20,7 +22,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.print.Pageable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -93,11 +94,11 @@ public class PublicacionServiceImpl implements PublicacionService {
     }
 
     @Override
-    public List<Publicacion> findAllByPrivacidad(/*Pageable pageable*/) {
-        if (repository.findAllByPrivacidad(Privacidad.PUBLICO).isEmpty())
+    public Page<Publicacion> findAllByPrivacidad(Pageable pageable) {
+        if (repository.findAllByPrivacidad(Privacidad.PUBLICO, pageable).isEmpty())
             throw new ListEntityNotFoundException(Publicacion.class);
         else
-            return repository.findAllByPrivacidad(Privacidad.PUBLICO).get();
+            return repository.findAllByPrivacidad(Privacidad.PUBLICO, pageable).get();
     }
 
     @Override

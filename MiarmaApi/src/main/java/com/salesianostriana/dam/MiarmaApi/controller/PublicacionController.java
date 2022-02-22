@@ -12,7 +12,10 @@ import com.salesianostriana.dam.MiarmaApi.services.impl.FileSystemStorageService
 import com.salesianostriana.dam.MiarmaApi.users.dto.GetUsuarioDto;
 import com.salesianostriana.dam.MiarmaApi.users.dto.UsuarioDtoConvert;
 import com.salesianostriana.dam.MiarmaApi.users.models.Usuario;
+import com.salesianostriana.dam.MiarmaApi.utils.paginations.PaginationsLinksUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,8 +25,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.awt.print.Pageable;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -42,6 +46,8 @@ public class PublicacionController {
     private final PublicacionDtoConverter publicacionDtoConverter;
     private final UsuarioDtoConvert usuarioDtoConvert;
     private final PublicacionesRepository publicacionesRepository;
+    private final PaginationsLinksUtils paginationsLinksUtils;
+
 
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createPublic (@RequestPart("newPublicacion") CreatePublicacionDto newPublicacion, @RequestPart("file")MultipartFile file, @AuthenticationPrincipal Usuario usuario) {
@@ -60,16 +66,26 @@ public class PublicacionController {
     }
 
     @GetMapping("/public")
-    public ResponseEntity<List<GetPublicacionDto>> findAllByPrivacidad() {
-        List<Publicacion> publicacion = service.findAllByPrivacidad();
+    public ResponseEntity<Page<GetPublicacionDto>> findAllByPrivacidad(@PageableDefault(size=10, page=0) Pageable pageable, HttpServletRequest request) {
+        Page<Publicacion> publicacion = service.findAllByPrivacidad(pageable);
 
         if (publicacion.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.ok()
+
+            Page<GetPublicacionDto> result =
+                    publicacion.map(publicacionDtoConverter::convertPublicacionToPublicacionDto);
+
+            UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString());
+
+            return ResponseEntity
+                    .ok().header("Link" ,
+                            paginationsLinksUtils.createLinkHeader(result , uriBuilder))
+                    .body(result);
+            /*return ResponseEntity.ok()
                     .body(publicacion.stream()
                             .map(publicacionDtoConverter::convertPublicacionToPublicacionDto)
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList()));*/
         }
     }
 
