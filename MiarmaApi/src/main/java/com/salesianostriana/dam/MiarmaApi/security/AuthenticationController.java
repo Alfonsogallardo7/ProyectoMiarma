@@ -62,6 +62,11 @@ public class AuthenticationController {
                 .privacidad(usuario.getPrivacidad().name())
                 .rol(usuario.getRole().name())
                 .token(jwt)
+                .listaPublicaciones((usuario.
+                        getListaPublicaciones()
+                        .stream()
+                        .map(publicacionDtoConverter::convertPublicacionToPublicacionDto)
+                        .collect(Collectors.toList())))
                 .build();
     }
 

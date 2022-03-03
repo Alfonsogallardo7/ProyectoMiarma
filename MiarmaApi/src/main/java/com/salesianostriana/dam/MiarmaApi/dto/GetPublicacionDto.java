@@ -15,5 +15,5 @@ import java.util.UUID;
 public class GetPublicacionDto {
 
     private UUID id;
-    private String titulo, texto, fichero, privacidad, usernameUsuario;
+    private String titulo, texto, fichero, privacidad, usernameUsuario, fotoUsuario;
 }

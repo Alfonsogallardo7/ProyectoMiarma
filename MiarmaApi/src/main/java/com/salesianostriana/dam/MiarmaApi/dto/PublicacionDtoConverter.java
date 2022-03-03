@@ -14,6 +14,7 @@ public class PublicacionDtoConverter {
                 .fichero(publicacion.getFichero())
                 .privacidad(publicacion.getPrivacidad().getValor())
                 .usernameUsuario(publicacion.getUsuario().getUsername())
+                .fotoUsuario(publicacion.getUsuario().getFotoPerfil())
                 .build();
     }
 
